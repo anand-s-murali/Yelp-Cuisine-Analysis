@@ -100,7 +100,7 @@ def graph_cuisine_trends(state, trends):
             "fontweight" : "bold",
             "fontsize"   : 6}
 
-    bar_chart = ax.bar(np.arange(len(x)), height, align="center", width=width)
+    bar_chart = ax.bar(np.arange(len(x)), height, align="center", width=width, color="#d13636")
 
     plt.title(f"Most Popular Predicted Cuisine by Year for {state.upper()}", pad=20)
     plt.xlabel("Year")
@@ -226,7 +226,7 @@ def main():
 
         # get the cuisine trends over the last 10 years and graph the results
         trends = get_cuisine_trends(state_data, state_predictions)
-        #graph_cuisine_trends(state, trends)
+        graph_cuisine_trends(state, trends)
 
         # get the overall cuisine
         best_overall_cuisine, best_overall_cuisine_sentiment_score = get_best_overall_cuisine(state_data, state_predictions)
@@ -237,11 +237,11 @@ def main():
         # add these results to table
         results.append([
             state.upper(),
-            round(accuracy),
+            accuracy,
             best_overall_cuisine.capitalize(),
-            round(best_overall_cuisine_sentiment_score),
+            best_overall_cuisine_sentiment_score,
             best_restaurant,
-            round(best_restaurant_sentiment_score)
+            best_restaurant_sentiment_score
         ])
 
     # tabulate the results

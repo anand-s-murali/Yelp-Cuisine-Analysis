@@ -1,10 +1,14 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
+import warnings
+from tabulate import tabulate
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics import accuracy_score, confusion_matrix
 from sklearn.linear_model import LogisticRegression
 from nltk.corpus import stopwords
+
+warnings.filterwarnings("ignore")
 
 def load_data():
     """
@@ -49,10 +53,10 @@ def main():
     best_c = -1
     best_accuracy = float("-inf")
     validation_accuracies = []
-
+    results = []
     for c in C:
         # create the model -- use l2 regularization
-        LR = LogisticRegression(dual=True, C = c, tol = 0.1, max_iter = 750, solver = "lbfgs")
+        LR = LogisticRegression(C = c, tol = 0.5, max_iter = 1000, solver = "lbfgs")
 
         # fit the model
         LR.fit(X_train, y_train)
@@ -70,6 +74,11 @@ def main():
 
         # add the validation accuracy to the list of accuracies
         validation_accuracies.append(validation_accuracy)
+
+        # add the (c, accuracy) pair to the results array so that the results can be tabulated
+        results.append([c, round(validation_accuracy * 100)])
+
+    print(tabulate(results, headers=["C (Regularization)", "Validation Accuracy (%)"]))
 
     # using the best hyperparameter value c, make predictions on the test set
     LR = LogisticRegression(C = best_c)
