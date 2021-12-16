@@ -216,8 +216,13 @@ def main():
     for state in ["ma", "tx", "wa"]:
         # get the data and labels for the corresponding state
         state_data = X_test[X_test["State"] == state]
+        state_labels = y_test[X_test["State"] == state]
+
         # make predictions on the state data
         state_predictions = NB.predict(state_data)
+
+        # calculate the state-level Naive Bayes accuracy
+        accuracy = accuracy_score(state_labels, state_predictions) * 100
 
         # get the cuisine trends over the last 10 years and graph the results
         trends = get_cuisine_trends(state_data, state_predictions)
@@ -232,6 +237,7 @@ def main():
         # add these results to table
         results.append([
             state.upper(),
+            round(accuracy),
             best_overall_cuisine.capitalize(),
             round(best_overall_cuisine_sentiment_score),
             best_restaurant,
@@ -239,7 +245,13 @@ def main():
         ])
 
     # tabulate the results
-    print(tabulate(results, headers=["State", "Best Overall Cuisine", "Cuisine Sentiment Score", "Best Restaurant for Cuisine", "Restaurant Sentiment Score"]))
+    print(tabulate(results, headers=["State", 
+        "Naive Bayes Accuracy (%)", 
+        "Best Overall Cuisine", 
+        "Cuisine Sentiment Score", 
+        "Best Restaurant for Cuisine", 
+        "Restaurant Sentiment Score"
+    ]))
 
 if __name__ == "__main__":
     main()
